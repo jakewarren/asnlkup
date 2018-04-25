@@ -36,4 +36,4 @@ deploy:
   skip_cleanup: true
   on:
     repo: jakewarren/asnlkup
-		tags: true
+    tags: true
