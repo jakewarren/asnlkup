@@ -37,7 +37,7 @@ IP      |ASN   |ISP
 
 ```
 ❯ asnlkup -h
-Usage: bulkiplkup [<flags>] [FILE]
+Usage: asnlkup [<flags>] [FILE]
 
 Optional flags:
 

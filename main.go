@@ -142,7 +142,7 @@ func writeHuman(records []Record, f *os.File) {
 // print custom usage instead of the default provided by pflag
 func displayUsage() {
 
-	fmt.Printf("Usage: bulkiplkup [<flags>] [FILE]\n\n")
+	fmt.Printf("Usage: asnlkup [<flags>] [FILE]\n\n")
 	fmt.Printf("Optional flags:\n\n")
 	pflag.PrintDefaults()
 }
