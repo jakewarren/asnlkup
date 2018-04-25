@@ -29,7 +29,7 @@ func main() {
 
 	userScope := apppaths.NewScope(apppaths.User, "", "asnlkup")
 
-	cacheDir,_ := userScope.CacheDir()
+	cacheDir, _ := userScope.CacheDir()
 	cacheDir += "/IP2LOCATION-LITE-ASN.CSV"
 
 	filePath := pflag.StringP("output", "o", "", "output file name")
@@ -66,7 +66,6 @@ func main() {
 		}
 
 	}
-
 
 	resp := make([]Record, 0)
 
@@ -129,8 +128,7 @@ func writeCSV(records []Record, f *os.File) {
 
 // writeHuman outputs the response as a pretty tabular output
 func writeHuman(records []Record, f *os.File) {
-	var w *tabwriter.Writer
-	w = tabwriter.NewWriter(f, 0, 0, 1, ' ', tabwriter.Debug)
+	w := tabwriter.NewWriter(f, 0, 0, 1, ' ', tabwriter.Debug)
 	defer w.Flush()
 
 	fmt.Fprintf(w, "IP\tASN\tISP\n")
@@ -148,7 +146,6 @@ func displayUsage() {
 	fmt.Printf("Optional flags:\n\n")
 	pflag.PrintDefaults()
 }
-
 
 // openStdinOrFile reads from stdin or a file based on what input the user provides
 func openStdinOrFile() io.Reader {
