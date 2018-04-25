@@ -1,0 +1,39 @@
+language: go
+
+go:
+  - "1.9.x"
+  - "1.10.x"
+  - "master"
+
+matrix:
+  allow_failures:
+    - go: "master"
+
+  fast_finish: true
+
+before_script:
+  - GO_FILES=$(find . -iname '*.go' -type f | grep -v /vendor/) # All the .go files, excluding vendor/
+  - go get github.com/golang/lint/golint                        # Linter
+  - go get honnef.co/go/tools/cmd/megacheck                     # Badass static analyzer/linter
+  - go get github.com/fzipp/gocyclo
+  - go get github.com/mitchellh/gox
+
+script:
+  - test -z $(gofmt -s -l $GO_FILES)         # Fail if a .go file hasn't been formatted with gofmt
+  - go test -v -race ./...                   # Run all the tests with the race detector enabled
+  - go vet ./...                             # go vet is the official Go static analyzer
+  - megacheck ./...                          # "go vet on steroids" + linter
+  - gocyclo -over 19 $GO_FILES               # forbid code with huge functions
+  - golint -set_exit_status $(go list ./...) # one last linter
+  - make release                             # build release binaries
+
+deploy:
+  provider: releases
+  api_key:
+    secure: CMeq023FFtMzf3aw95PkKWBtVA7N2UYd3U13VJT0YsVKAY9XqiXlP9DeHajzhE5VKMR8CcUp0ic/3eTAD2qhjkOc/R7c7XsEgkxsSq2A7mSQCKPHTlGYEUMoamz/L7D3ttUlLEnxzb2EL3hLTmvPYAmCDCHI7LRZWxOQNZP70lKN2YgnMBoCv8sJGGfc8hvINOtFjeK6cbZLnkYY1lykbWAPPZpAgr8eESuoEfRNLzvfCTBFHsaJIsgycIowh92S1ijDqASoRAqQiiW8Cd/arDzjzkoM7hHKeqCc/qnl2DHb9CNapgeS5AvYtCevcxfccaFxqoqkpAOfYInKRhAgPll98mjBS7ge+RG+yfu2/X0qKIxhUVWwK3h8V5PeGY3HCFSHHK6GEGBuRAh0a9NV7LoeRzBCMt5zUTDsZcLnEPqsZsf0bxrULWadQTrEY7KZQCHdEVA/6ncfFJ0kpJeIPeCA7VtS1zrUZ7lbQyVAA8JVpwK37itfbQYZ45o4k6vyXP8My09JhaXT9hAjP1QW7L4hp7yYii/oNXIIKgDyYGn1ppgPY0cP/EAROgzD8acZVbDozwXLW8bHA1SvF00k4HmAdEbLX5wNOfxKrWHbI2BXGAUHrSB7Mx6cxHGfkiBfvPB77vIdc7Y4cEOCEG7CTHr8owaOOfzUaCaK592+AfE=
+  file_glob: true
+  file: 'bin/*'
+  skip_cleanup: true
+  on:
+    repo: jakewarren/asnlkup
+		tags: true
